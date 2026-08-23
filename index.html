@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>ShopVoice - Voice-Activated Shopping Assistant</title>
+    <!-- Tailwind CSS with Forms and Container Queries plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600&family=Geist:wght@500&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-highest": "#dbe4ed",
+                        "secondary-fixed-dim": "#c6c6c6",
+                        "on-primary-container": "#dfe3ff",
+                        "outline-variant": "#c3c5d9",
+                        "secondary-container": "#e2e2e2",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#4c4e4f",
+                        "surface-variant": "#dbe4ed",
+                        "primary-fixed-dim": "#b7c4ff",
+                        "outline": "#737688",
+                        "surface-container-low": "#ecf5fe",
+                        "on-secondary": "#ffffff",
+                        "background": "#f6faff",
+                        "secondary-fixed": "#e2e2e2",
+                        "inverse-primary": "#b7c4ff",
+                        "on-primary-fixed-variant": "#0038b6",
+                        "surface-container-high": "#e0e9f2",
+                        "inverse-on-surface": "#e9f2fb",
+                        "on-surface": "#141d23",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#e1e3e4",
+                        "on-background": "#141d23",
+                        "surface-container": "#e6eff8",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#e3e4e5",
+                        "on-secondary-container": "#646464",
+                        "surface-dim": "#d2dbe4",
+                        "on-secondary-fixed-variant": "#474747",
+                        "on-tertiary-fixed": "#191c1d",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#c5c7c8",
+                        "primary-container": "#0052ff",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#004ced",
+                        "surface": "#f6faff",
+                        "surface-bright": "#f6faff",
+                        "on-secondary-fixed": "#1b1b1b",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#454748",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#293138",
+                        "primary-fixed": "#dde1ff",
+                        "on-surface-variant": "#434656",
+                        "tertiary-container": "#646667",
+                        "secondary": "#5e5e5e",
+                        "primary": "#003ec7",
+                        "on-primary-fixed": "#001452"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    spacing: {
+                        "margin-desktop": "48px",
+                        "container-max": "1200px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "unit": "8px"
+                    },
+                    fontFamily: {
+                        "headline-lg": ["Hanken Grotesk"],
+                        "label-sm": ["Geist"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "body-md": ["Inter"]
+                    },
+                    fontSize: {
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        };
+    </script>
+    
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        .voice-pulse {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(0, 82, 255, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 20px rgba(0, 82, 255, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(0, 82, 255, 0);
+            }
+        }
+        
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Ambient glowing effects */
+        .glow-active {
+            box-shadow: 0 0 20px 4px rgba(0, 82, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col font-body-md text-body-md pb-32 md:pb-12">
+    <!-- TopAppBar -->
+    <header class="bg-surface dark:bg-background top-0 border-b border-surface-container-highest flex justify-between items-center w-full px-margin-mobile h-16 sticky z-40">
+        <button id="help-btn" class="text-primary hover:bg-surface-container-low transition-colors active:scale-95 duration-200 p-2 rounded-full flex items-center justify-center" title="Help Guide">
+            <span class="material-symbols-outlined">help</span>
+        </button>
+        <div class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface text-center flex-1 flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-primary text-3xl">record_voice_over</span>
+            <span>ShopVoice</span>
+        </div>
+        <button id="settings-btn" class="text-primary hover:bg-surface-container-low transition-colors active:scale-95 duration-200 p-2 rounded-full flex items-center justify-center" title="Settings">
+            <span class="material-symbols-outlined">settings</span>
+        </button>
+    </header>
+
+    <main class="flex-1 w-full max-w-[1200px] mx-auto md:px-margin-desktop md:py-8 px-4 py-4 flex flex-col gap-6">
+        
+        <!-- Status / Transcription Floating Panel -->
+        <section id="voice-status-panel" class="w-full bg-white border border-surface-container-highest rounded-xl p-4 flex flex-col gap-2 transition-all duration-300 shadow-sm hidden">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span id="voice-indicator-dot" class="w-3 h-3 rounded-full bg-primary animate-ping"></span>
+                    <span id="voice-status-text" class="font-label-sm text-label-sm uppercase tracking-wider text-primary">Listening...</span>
+                </div>
+                <button id="voice-close-panel" class="text-on-surface-variant hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-sm">close</span>
+                </button>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary text-2xl">chat_bubble</span>
+                <p id="voice-transcript" class="text-lg font-semibold text-on-surface italic">"..."</p>
+            </div>
+            <!-- Audio feedback wave visualization -->
+            <div id="voice-wave" class="flex items-center gap-1 h-4 mt-1">
+                <span class="w-1 h-2 bg-primary rounded-full animate-[bounce_1s_infinite]"></span>
+                <span class="w-1 h-4 bg-primary rounded-full animate-[bounce_1s_infinite_100ms]"></span>
+                <span class="w-1 h-3 bg-primary rounded-full animate-[bounce_1s_infinite_200ms]"></span>
+                <span class="w-1 h-1 bg-primary rounded-full animate-[bounce_1s_infinite_300ms]"></span>
+                <span class="w-1 h-3 bg-primary rounded-full animate-[bounce_1s_infinite_400ms]"></span>
+            </div>
+        </section>
+
+        <!-- Notification Toast -->
+        <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-on-surface text-background font-label-sm py-2 px-4 rounded-full shadow-lg z-50 flex items-center gap-2 transition-all duration-300 opacity-0 pointer-events-none">
+            <span class="material-symbols-outlined text-primary">info</span>
+            <span id="toast-text">Action completed</span>
+        </div>
+
+        <!-- Quick Add / Search Panel -->
+        <section class="bg-surface-container border border-surface-container-highest rounded-xl p-4 flex flex-col gap-3">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">search</span>
+                <h3 class="font-bold text-on-surface">Quick Add or Search</h3>
+            </div>
+            <form id="text-input-form" class="flex gap-2">
+                <input id="text-input" type="text" placeholder="Type a command e.g., 'Add 3 apples' or 'Find organic peanut butter'..." class="flex-1 rounded-lg border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary text-sm p-3 placeholder-on-surface-variant"/>
+                <button type="submit" class="bg-black text-white hover:bg-primary transition-colors rounded-lg px-4 py-3 flex items-center justify-center font-bold text-sm">
+                    Go
+                </button>
+            </form>
+            <div class="text-xs text-on-surface-variant flex flex-wrap gap-2 items-center">
+                <span>Try:</span>
+                <button type="button" onclick="prefillInput('Add 2 bottles of water')" class="underline hover:text-primary">"Add 2 bottles of water"</button>
+                <span>•</span>
+                <button type="button" onclick="prefillInput('Find toothpaste under $5')" class="underline hover:text-primary">"Find toothpaste under $5"</button>
+                <span>•</span>
+                <button type="button" onclick="prefillInput('Remove bananas')" class="underline hover:text-primary">"Remove bananas"</button>
+            </div>
+        </section>
+
+        <!-- Search Results Panel (Conditional) -->
+        <section id="search-results-section" class="w-full bg-white border border-primary-container/20 rounded-xl p-4 flex flex-col gap-3 hidden">
+            <div class="flex justify-between items-center border-b border-surface-container-highest pb-2">
+                <h3 class="font-bold text-primary flex items-center gap-2">
+                    <span class="material-symbols-outlined">find_in_page</span> Search Results
+                </h3>
+                <button id="close-search-results" class="text-on-surface-variant hover:text-primary transition-colors flex items-center">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div id="search-results-list" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <!-- Search result cards will go here -->
+            </div>
+        </section>
+
+        <!-- Smart Suggestions Carousel -->
+        <section class="w-full">
+            <div class="mb-4 flex justify-between items-center">
+                <h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-2xl">auto_awesome</span> Smart Suggestions
+                </h2>
+            </div>
+            <div id="suggestions-carousel" class="flex overflow-x-auto no-scrollbar gap-4 pb-4 snap-x">
+                <!-- Suggestions will be generated here -->
+            </div>
+        </section>
+
+        <!-- Main Shopping List -->
+        <section class="w-full">
+            <div class="flex justify-between items-end mb-6 border-b border-surface-container-highest pb-2">
+                <h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-2xl">shopping_basket</span> Current List
+                </h2>
+                <div class="flex items-center gap-3">
+                    <span id="items-count" class="text-sm font-semibold bg-primary-container/10 text-primary px-3 py-1 rounded-full">0 items</span>
+                    <button id="clear-list-btn" class="text-error hover:underline text-sm font-medium flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">delete_sweep</span> Clear All
+                    </button>
+                </div>
+            </div>
+            
+            <div id="shopping-list-container" class="flex flex-col gap-6">
+                <!-- Categories and items will be dynamically generated here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Fixed Floating Action Button (Voice Input) -->
+    <div class="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex flex-col items-center gap-2 pointer-events-none">
+        <!-- Voice Simulation Panel -->
+        <div id="voice-sim-panel" class="bg-white border border-primary-container/20 rounded-xl p-4 flex flex-col gap-3 shadow-lg max-w-sm w-80 pointer-events-auto hidden mb-2 transition-all duration-300">
+            <div class="flex justify-between items-center">
+                <span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-bold">Offline Voice Simulator</span>
+                <button id="voice-sim-close" class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-sm">close</span></button>
+            </div>
+            <p class="text-xs text-on-surface-variant">Type your voice command below. The NLP engine will parse it exactly as if you spoke it:</p>
+            <div class="flex gap-2">
+                <input id="voice-sim-input" type="text" placeholder="e.g. Add 2 whole milk..." class="flex-1 rounded-lg border-outline-variant text-sm p-2 bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary"/>
+                <button id="voice-sim-submit" class="bg-primary text-white rounded-lg px-3 py-2 text-sm font-bold">Say</button>
+            </div>
+        </div>
+        <div id="mic-hint-bubble" class="bg-black text-white text-xs px-3 py-1.5 rounded-full shadow-lg opacity-90 transition-opacity duration-300 pointer-events-auto">
+            Click to speak
+        </div>
+        <button id="voice-fab" class="pointer-events-auto bg-primary-container hover:bg-primary text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg voice-pulse hover:scale-105 transition-all duration-300 active:scale-95">
+            <span class="material-symbols-outlined filled text-3xl" id="mic-icon">mic</span>
+        </button>
+    </div>
+
+    <!-- Help Modal Overlay -->
+    <div id="help-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto flex flex-col gap-4">
+            <div class="flex justify-between items-center border-b border-surface-container-highest pb-3">
+                <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary font-bold flex items-center gap-2">
+                    <span class="material-symbols-outlined">help</span> ShopVoice Commands
+                </h3>
+                <button id="close-help" class="text-on-surface-variant hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="space-y-4 text-sm text-on-surface">
+                <p>ShopVoice listens to your voice commands and automatically updates your shopping list. Here are some templates of what you can say:</p>
+                
+                <div class="space-y-3">
+                    <div class="bg-surface-container-low p-3 rounded-lg">
+                        <span class="font-bold block text-primary">1. Adding Items</span>
+                        <p class="italic">"Add milk"</p>
+                        <p class="italic">"Buy 3 packages of chocolate cookies"</p>
+                        <p class="italic">"I need 2 bottles of organic water"</p>
+                    </div>
+
+                    <div class="bg-surface-container-low p-3 rounded-lg">
+                        <span class="font-bold block text-primary">2. Removing Items</span>
+                        <p class="italic">"Remove milk"</p>
+                        <p class="italic">"Delete apples from my list"</p>
+                    </div>
+
+                    <div class="bg-surface-container-low p-3 rounded-lg">
+                        <span class="font-bold block text-primary">3. Search & Pricing</span>
+                        <p class="italic">"Find organic peanut butter"</p>
+                        <p class="italic">"Search toothpaste under 5 dollars"</p>
+                        <p class="italic">"Show me pasta under 10 dollars"</p>
+                    </div>
+
+                    <div class="bg-surface-container-low p-3 rounded-lg">
+                        <span class="font-bold block text-primary">4. Assistant Queries</span>
+                        <p class="italic">"Read my shopping list"</p>
+                        <p class="italic">"Clear my shopping list"</p>
+                    </div>
+                </div>
+                
+                <p class="text-xs text-on-surface-variant">The app automatically categorizes items (Dairy, Produce, Bakery, Pantry, Snacks, etc.) and tracks quantities using natural language pattern matching.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal Overlay -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 flex flex-col gap-5">
+            <div class="flex justify-between items-center border-b border-surface-container-highest pb-3">
+                <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary font-bold flex items-center gap-2">
+                    <span class="material-symbols-outlined">settings</span> Voice Settings
+                </h3>
+                <button id="close-settings" class="text-on-surface-variant hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <div class="flex flex-col gap-4 text-sm">
+                <!-- Language Selector -->
+                <div class="flex flex-col gap-2">
+                    <label for="lang-select" class="font-bold text-on-surface">Voice Command Language</label>
+                    <select id="lang-select" class="rounded-lg border-outline-variant bg-surface-container-lowest focus:border-primary text-sm p-3 w-full">
+                        <option value="en-US">English (United States)</option>
+                        <option value="es-ES">Español (España)</option>
+                        <option value="fr-FR">Français (France)</option>
+                    </select>
+                </div>
+
+                <!-- Text to Speech Voice Toggle -->
+                <div class="flex justify-between items-center py-2 border-b border-surface-container-highest">
+                    <div>
+                        <span class="font-bold block text-on-surface">Voice Assistant Feedback</span>
+                        <span class="text-xs text-on-surface-variant">Read aloud changes and suggestions</span>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="voice-feedback-toggle" checked class="sr-only peer">
+                        <div class="w-11 h-6 bg-secondary-fixed peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                </div>
+
+                <!-- Voice Simulation Toggle -->
+                <div class="flex justify-between items-center py-2 border-b border-surface-container-highest">
+                    <div>
+                        <span class="font-bold block text-on-surface">Simulate Microphone Input</span>
+                        <span class="text-xs text-on-surface-variant">Type commands when Speech API is offline</span>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="voice-sim-toggle" class="sr-only peer">
+                        <div class="w-11 h-6 bg-secondary-fixed peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                </div>
+
+                <!-- Sample Audio Demo -->
+                <div class="flex justify-between items-center py-2">
+                    <span class="text-on-surface">Speech Voice Volume</span>
+                    <button id="test-voice-btn" class="text-primary hover:underline font-semibold flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">play_circle</span> Test Voice
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main JavaScript App Code -->
+    <script src="app.js"></script>
+    <script>
+        function prefillInput(val) {
+            const input = document.getElementById('text-input');
+            input.value = val;
+            input.focus();
+        }
+    </script>
+</body>
+</html>
